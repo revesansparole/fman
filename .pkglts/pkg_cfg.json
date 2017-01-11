@@ -1,0 +1,46 @@
+{
+  "_pkglts": {
+    "auto_install": true,
+    "install_front_end": "stdout",
+    "use_prompts": false,
+    "version": 3
+  },
+  "base": {
+    "authors": [
+      [
+        "revesansparole",
+        "revesansparole@gmail.com"
+      ]
+    ],
+    "namespace": null,
+    "pkgname": "fman",
+    "url": null
+  },
+  "doc": {
+    "description": "file manager",
+    "keywords": []
+  },
+  "github": {
+    "owner": "{{ base.authors[0][0] }}",
+    "project": "{{ base.pkgname }}",
+    "url": "https://github.com/{{ github.owner }}/{{ github.project }}"
+  },
+  "license": {
+    "name": "mit",
+    "organization": "perso inc.",
+    "project": "{{ base.pkgname }}",
+    "year": 2015
+  },
+  "pysetup": {
+    "intended_versions": [
+      "36"
+    ],
+    "require": []
+  },
+  "test": {},
+  "version": {
+    "major": 0,
+    "minor": 1,
+    "post": 0
+  }
+}
