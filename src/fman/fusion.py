@@ -1,0 +1,107 @@
+"""Defines a set of functions to compare the content
+of two directories in terms of files.
+
+Two main functions:
+  - fusion: copy files from source to destination without overwriting
+            already existing files
+  - compare: internally used to compare attributes of two files
+"""
+
+from os import getcwd, mkdir
+from os.path import exists, getsize, join, isdir
+from shutil import copy
+from sys import argv
+
+import standard as std
+
+
+def fusion(src_dir, dst_dir):
+    """Fusion the files in src with the content of dst.
+
+    Copy files or directories present exclusively in src into dst.
+    In case of files, copy also their associated hash file.
+
+    Args:
+      - src_dir (str): reference directory path.
+      - dst_dir (str): directory files will be copied into.
+
+    Returns:
+      - List of file names present in src_dir and already existing in dst_dir.
+    """
+    nb = len(src_dir) + 1
+    conflicted = []
+
+    for src_pth in std.walk([src_dir]):
+        # get corresponding dst path
+        dst_pth = join(dst_dir, src_pth[nb:])
+
+        if isdir(src_pth):  # directory case
+            if exists(dst_pth):
+                # do nothing
+                pass
+            else:
+                print("create: {}".format(dst_pth))
+                mkdir(dst_pth)
+        else:  # file case
+            if not exists(std.hashname(src_pth)):
+                msg = "file does not have asociated hash:\n{}".format(src_pth)
+                raise UserWarning(msg)
+
+            if exists(dst_pth):
+                # check associated hash
+                with open(std.hashname(src_pth), 'rb') as f:
+                    src_hash = f.read()
+
+                if exists(std.hashname(dst_pth)):
+                    with open(std.hashname(dst_pth), 'rb') as f:
+                        dst_hash = f.read()
+                else:
+                    dst_hash = ""
+
+                if src_hash == dst_hash:
+                    # similar files, do nothing
+                    # should have check for file integrity before the fusion
+                    pass
+                else:
+                    conflicted.append((src_pth, dst_pth))
+            else:
+                print("copy: {}".format(src_pth))
+                copy(src_pth, dst_pth)
+                copy(std.hashname(src_pth), std.hashname(dst_pth))
+
+    return conflicted
+
+
+def compare(src_pth, dst_pth):
+    """Compare attribute of a file both in src and dst.
+    """
+    # size comparison
+    src_size = getsize(src_pth)
+    dst_size = getsize(dst_pth)
+    if src_size == dst_size:
+        sym = '='
+    elif src_size > dst_size:
+        sym = '>'
+    else:
+        sym = '<'
+    ssize = src_size / 1024 ** 2
+    dsize = dst_size / 1024 ** 2
+    print("{} -> {}".format(src_pth, dst_pth))
+    print("          {:.1f} Mo {} {:.1f} Mo".format(ssize, sym, dsize))
+
+
+def main():
+    """Perform fusion based on command line arguments.
+    """
+    if len(argv) == 1:
+        raise UserWarning("I need at least a destination directory")
+    elif len(argv) == 2:
+        src_dir = getcwd()
+        dst_dir = argv[1]
+    else:
+        src_dir, dst_dir = argv[1:3]
+
+    conflicts = fusion(src_dir, dst_dir)
+
+    for names in conflicts:
+        compare(*names)
