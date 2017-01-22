@@ -19,20 +19,19 @@ def cvt(filename):
     fname, ext = splitext(filename)
 
     # test if already zipfile maybe with incorrect extensions
-    try:
-        f = ZipFile(filename, 'r')
-        f.close()
-        rename(filename, "{}.cbz".format(fname))
-        return
-    except BadZipfile:
-        pass
+    # try:
+    #     f = ZipFile(filename, 'r')
+    #     f.close()
+    #     rename(filename, "{}.cbz".format(fname))
+    # except BadZipfile:
+    #     pass
 
     # clean tmp_fld
     rmtree(tmp_fld)
     mkdir(tmp_fld)
 
     # extract to tmp_fld
-    if ext in (".cbr", ".rar"):
+    if ext in (".cbz", ".cbr", ".rar"):
         # cmd = "unar -no-directory -o {} {}".format(tmp_fld, escape(filename) )
         # cmd = "unrar e -o- {} {}".format(escape(filename), tmp_fld)
         cmd = '7z e -o{} "{}"'.format(tmp_fld, filename)
@@ -68,7 +67,7 @@ def cvt_files(filenames=None):
         mkdir(trash_fld)
 
     if filenames is None:
-        filenames = sorted(glob("*.pdf") + glob("*.cbr") + glob("*.rar"))
+        filenames = sorted(glob("*.pdf") + glob("*.cbz") + glob("*.cbr") + glob("*.rar"))
 
     for filename in filenames:
         print(filename)
