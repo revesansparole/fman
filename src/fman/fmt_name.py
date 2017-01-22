@@ -3,7 +3,7 @@
 
 from os import rename
 from os.path import exists
-from unidecode import unidecode
+# from unidecode import unidecode
 
 from fman import standard as std
 
@@ -21,7 +21,7 @@ def fmt(filename):
     """
     name = filename.lower()
     name = name.replace("_", " ")
-    name = unidecode(name)
+    # name = unidecode(name)
 
     if name != filename:
         if exists(name):
