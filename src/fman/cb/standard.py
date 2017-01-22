@@ -11,4 +11,5 @@ def dirname(cbzname):
 
 
 # extension of files recognized as images
-img_exts = ("jpg", "jpeg", "jp2", "png", "ppm", "gif")
+img_ext_needing_cvt = ("jpeg", "jp2", "ppm", "gif")
+img_exts = img_ext_needing_cvt + ("jpg", "png")

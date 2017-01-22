@@ -4,7 +4,7 @@
 from glob import glob
 from os import mkdir, rename
 from os.path import basename, exists, join, splitext
-from re import escape
+# from re import escape
 from shutil import move, rmtree
 from subprocess import Popen, PIPE
 from zipfile import ZipFile, ZIP_DEFLATED, BadZipfile
@@ -34,9 +34,11 @@ def cvt(filename):
     # extract to tmp_fld
     if ext in (".cbr", ".rar"):
         # cmd = "unar -no-directory -o {} {}".format(tmp_fld, escape(filename) )
-        cmd = "unrar e -o- {} {}".format(escape(filename), tmp_fld)
+        # cmd = "unrar e -o- {} {}".format(escape(filename), tmp_fld)
+        cmd = '7z e -o{} "{}"'.format(tmp_fld, filename)
     elif ext == ".pdf":
-        cmd = "pdfimages -all {} {}/page".format(escape(filename), tmp_fld)
+        # cmd = "pdfimages -all {} {}/page".format(escape(filename), tmp_fld)
+        cmd = 'pdfimages "{}" {}/page'.format(filename, tmp_fld)
     else:
         raise UserWarning("unrecognized format for {}".format(filename))
 
@@ -44,7 +46,9 @@ def cvt(filename):
                 shell=True,
                 stdout=PIPE,
                 stderr=PIPE)
-    pip.wait()
+    if pip.wait() != 0:
+        print(pip.stderr.read())
+        return
 
     # move file to trash
     move(filename, join(trash_fld, basename(filename)))

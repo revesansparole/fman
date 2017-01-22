@@ -8,6 +8,7 @@ examples:
 
 from glob import escape, glob
 from os.path import basename, exists, normpath, splitext
+from PIL import Image
 from zipfile import ZipFile, ZIP_DEFLATED
 
 from fman.cb import standard as std
@@ -70,11 +71,22 @@ def make_cbz(dname, fname=None):
     if exists(fname):
         raise FileExistsError("CBZ file '{}' already exists".format(fname))
 
-    # find image files
+    # find image files that need conversion
     filenames = []
-    for ext in std.img_exts:
+    for ext in std.img_ext_needing_cvt:
         filenames.extend(glob("{}/*.{}".format(escape(dname), ext)))
         filenames.extend(glob("{}/*.{}".format(escape(dname), ext.upper())))
+
+    for img_pth in filenames:
+        img = Image.open(img_pth)
+        img.save("{}.jpg".format(splitext(img_pth)[0]))
+
+    # find all jpg/png images in folder
+    filenames = []
+    for ext in ("jpg", "png"):
+        filenames.extend(glob("{}/*.{}".format(escape(dname), ext)))
+        # uncomment for linux
+        # filenames.extend(glob("{}/*.{}".format(escape(dname), ext.upper())))
 
     if len(filenames) == 0:
         msg = "Directory '{}' does not contain any image file".format(dname)

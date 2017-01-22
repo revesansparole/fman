@@ -69,7 +69,8 @@ def action_store(*args, **kwds):
     store(fnames)
 
 
-action = dict(check=action_check,
+action = dict(cbz=action_cbz,
+              check=action_check,
               fmt=action_fmt_names,
               fusion=action_fusion,
               store=action_store)
