@@ -4,8 +4,39 @@ from os import getcwd
 from fman.fmt_name import fmt_names
 from fman.fusion import compare, fusion
 from fman.integrity_scripts import check, store
+from fman.cb import fmt_name, txt_translator
 from fman.cb.cvt_to_cbz import cvt_files
 from fman.cb.sort_file import sort_comix
+
+
+def action_cbfmt(*args, **kwds):
+    """Format name of comix book.
+    """
+    if len(args) == 0:
+        fnames = None
+    else:
+        fnames = args
+    del kwds  # unused
+    fmt_name.main(fnames)
+
+
+def action_cbsort(*args, **kwds):
+    """Sort comic books in alphabetical folders.
+    """
+    if len(args) == 0:
+        fnames = None
+    else:
+        fnames = args
+    del kwds  # unused
+    sort_comix(fnames)
+
+
+def action_cbtxt(*args, **kwds):
+    """Format comix list into txt.
+    """
+    del args  # unused
+    del kwds  # unused
+    txt_translator.main()
 
 
 def action_cbz(*args, **kwds):
@@ -59,17 +90,6 @@ def action_fusion(*args, **kwds):
         compare(*names)
 
 
-def action_cbsort(*args, **kwds):
-    """Sort comic books in alphabetical forlders.
-    """
-    if len(args) == 0:
-        fnames = None
-    else:
-        fnames = args
-    del kwds  # unused
-    sort_comix(fnames)
-
-
 def action_store(*args, **kwds):
     """Associate hash to filenames.
     """
@@ -81,11 +101,13 @@ def action_store(*args, **kwds):
     store(fnames)
 
 
-action = dict(cbz=action_cbz,
+action = dict(cbfmt=action_cbfmt,
+              cbsort=action_cbsort,
+              cbtxt=action_cbtxt,
+              cbz=action_cbz,
               check=action_check,
               fmt=action_fmt_names,
               fusion=action_fusion,
-              cbsort=action_cbsort,
               store=action_store)
 
 
