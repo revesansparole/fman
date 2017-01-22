@@ -7,13 +7,14 @@ examples:
 """
 
 from glob import escape, glob
+from io import BytesIO
 from os.path import basename, exists, normpath, splitext
 from PIL import Image
 from zipfile import ZipFile, ZIP_DEFLATED
 
 from fman.cb import standard as std
 
-__all__ = ["create_cbz", "make_cbz"]
+__all__ = ["create_cbz", "extract_covert", "make_cbz"]
 
 
 def create_cbz(fname, images):
@@ -94,3 +95,25 @@ def make_cbz(dname, fname=None):
 
     # create cbz
     create_cbz(fname, sorted(filenames))
+
+
+def extract_covert(cbzpth):
+    """Extract first page of cbz file.
+
+    Args:
+        cbzpth (str): path to cbz file
+
+    Returns:
+        (None): register image with same name than comix
+    """
+    cbz_name, ext = splitext(cbzpth)
+    assert ext == ".cbz"
+
+    zf = ZipFile(cbzpth, 'r')
+    imgfiles = [name for name in zf.namelist() \
+                if splitext(name)[1].lower()[1:] in std.img_exts]
+    imgfiles.sort()
+
+    img_data = zf.read(imgfiles[0])
+    img = Image.open(BytesIO(img_data))
+    img.save("{}.jpg".format(cbz_name))

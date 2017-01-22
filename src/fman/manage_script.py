@@ -1,4 +1,5 @@
 from argparse import ArgumentParser, RawTextHelpFormatter
+from glob import glob
 from os import getcwd
 
 from fman.fmt_name import fmt_names
@@ -6,7 +7,21 @@ from fman.fusion import compare, fusion
 from fman.integrity_scripts import check, store
 from fman.cb import fmt_name, txt_translator
 from fman.cb.cvt_to_cbz import cvt_files
+from fman.cb.editing import extract_covert
 from fman.cb.sort_file import sort_comix
+
+
+def action_cbcovert(*args, **kwds):
+    """Format name of comix book.
+    """
+    del kwds  # unused
+    if len(args) == 0:
+        filenames = sorted(glob("*.cbz"))
+    else:
+        filenames = args
+
+    for fname in filenames:
+        extract_covert(fname)
 
 
 def action_cbfmt(*args, **kwds):
@@ -101,7 +116,8 @@ def action_store(*args, **kwds):
     store(fnames)
 
 
-action = dict(cbfmt=action_cbfmt,
+action = dict(cbcovert=action_cbcovert,
+              bfmt=action_cbfmt,
               cbsort=action_cbsort,
               cbtxt=action_cbtxt,
               cbz=action_cbz,
