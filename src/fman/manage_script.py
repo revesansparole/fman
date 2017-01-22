@@ -21,6 +21,7 @@ def action_cbcovert(*args, **kwds):
         filenames = args
 
     for fname in filenames:
+        print(fname)
         extract_covert(fname)
 
 
