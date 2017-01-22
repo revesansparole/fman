@@ -25,14 +25,12 @@ def sort(filename):
         return tgtname
 
 
-def main():
+def sort_comix(filenames=None):
     """Convert files in current directory or whose names have been
     passed on the command line.
     """
-    if len(argv) == 1:
+    if filenames is None:
         filenames = sorted(glob("*.cbz"))
-    else:
-        filenames = argv[1:]
 
     for dirname in "0abcdefghijklmnopqrstuvwxyz":
         if not exists(dirname):
@@ -45,7 +43,3 @@ def main():
         else:
             print("moved: {}".format(filename))
             associate_hash(pth)
-
-
-if __name__ == "__main__":
-    main()

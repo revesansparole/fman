@@ -5,6 +5,7 @@ from fman.fmt_name import fmt_names
 from fman.fusion import compare, fusion
 from fman.integrity_scripts import check, store
 from fman.cb.cvt_to_cbz import cvt_files
+from fman.cb.sort_file import sort_comix
 
 
 def action_cbz(*args, **kwds):
@@ -58,6 +59,17 @@ def action_fusion(*args, **kwds):
         compare(*names)
 
 
+def action_cbsort(*args, **kwds):
+    """Sort comic books in alphabetical forlders.
+    """
+    if len(args) == 0:
+        fnames = None
+    else:
+        fnames = args
+    del kwds  # unused
+    sort_comix(fnames)
+
+
 def action_store(*args, **kwds):
     """Associate hash to filenames.
     """
@@ -73,6 +85,7 @@ action = dict(cbz=action_cbz,
               check=action_check,
               fmt=action_fmt_names,
               fusion=action_fusion,
+              cbsort=action_cbsort,
               store=action_store)
 
 
