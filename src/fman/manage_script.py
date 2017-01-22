@@ -1,6 +1,9 @@
 from argparse import ArgumentParser, RawTextHelpFormatter
+from os import getcwd
 
-from integrity_scripts import check, store
+from fman.fmt_name import fmt_names
+from fman.fusion import compare, fusion
+from fman.integrity_scripts import check, store
 
 
 def action_check(*args, **kwds):
@@ -12,6 +15,35 @@ def action_check(*args, **kwds):
         fnames = args
     del kwds  # unused
     check(fnames)
+
+
+def action_fmt_names(*args, **kwds):
+    """Rename files with normalized names.
+    """
+    if len(args) == 0:
+        fnames = ["."]
+    else:
+        fnames = args
+    del kwds  # unused
+    fmt_names(fnames)
+
+
+def action_fusion(*args, **kwds):
+    """Attempt to fusion the content of two directories.
+    """
+    if len(args) == 0:
+        raise UserWarning("I need at least a destination directory")
+    elif len(args) == 1:
+        src_dir = getcwd()
+        dst_dir = args[0]
+    else:
+        src_dir, dst_dir = args[:2]
+    del kwds  # unused
+
+    conflicts = fusion(src_dir, dst_dir)
+
+    for names in conflicts:
+        compare(*names)
 
 
 def action_store(*args, **kwds):
@@ -26,6 +58,8 @@ def action_store(*args, **kwds):
 
 
 action = dict(check=action_check,
+              fmt=action_fmt_names,
+              fusion=action_fusion,
               store=action_store)
 
 
@@ -42,7 +76,7 @@ def main():
                         help=act_help)
 
     parser.add_argument('action_args', nargs='*',
-                        help="action to perform on files")
+                        help="List of files to perform action onto")
 
     parser.add_argument('-e', metavar='extra', nargs=2, action='append',
                         help='extra arguments to pass to the action',

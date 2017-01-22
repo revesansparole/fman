@@ -3,16 +3,21 @@
 
 from os import rename
 from os.path import exists
-from sys import argv
 from unidecode import unidecode
 
-import standard as std
+from fman import standard as std
 
 
 def fmt(filename):
-    """Normalize name.
+    """Rename file with normalized name.
 
-    ..warning: bug when changing the name of a directory
+    Warning: bug when changing the name of a directory
+
+    Args:
+      filename (str):
+
+    Returns:
+      (None)
     """
     name = filename.lower()
     name = name.replace("_", " ")
@@ -25,20 +30,17 @@ def fmt(filename):
             rename(filename, name)
 
 
-def main():
+def fmt_names(fnames):
     """Convert files in current directory or whose names have been
     passed on the command line.
-    """
-    if len(argv) == 1:
-        fnames = ["."]
-    else:
-        fnames = argv[1:]
 
+    Args:
+      fnames (list of str): set of paths/filenames to explore.
+
+    Returns:
+      (None)
+    """
     invalids = []
     for fname in std.walk(fnames):
         print(fname)
         fmt(fname)
-
-
-if __name__ == "__main__":
-    main()

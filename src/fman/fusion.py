@@ -7,12 +7,11 @@ Two main functions:
   - compare: internally used to compare attributes of two files
 """
 
-from os import getcwd, mkdir
+from os import mkdir
 from os.path import exists, getsize, join, isdir
 from shutil import copy
-from sys import argv
 
-import standard as std
+from fman import standard as std
 
 
 def fusion(src_dir, dst_dir):
@@ -22,11 +21,11 @@ def fusion(src_dir, dst_dir):
     In case of files, copy also their associated hash file.
 
     Args:
-      - src_dir (str): reference directory path.
-      - dst_dir (str): directory files will be copied into.
+      src_dir (str): reference directory path.
+      dst_dir (str): directory files will be copied into.
 
     Returns:
-      - List of file names present in src_dir and already existing in dst_dir.
+      List of file names present in src_dir and already existing in dst_dir.
     """
     nb = len(src_dir) + 1
     conflicted = []
@@ -88,20 +87,3 @@ def compare(src_pth, dst_pth):
     dsize = dst_size / 1024 ** 2
     print("{} -> {}".format(src_pth, dst_pth))
     print("          {:.1f} Mo {} {:.1f} Mo".format(ssize, sym, dsize))
-
-
-def main():
-    """Perform fusion based on command line arguments.
-    """
-    if len(argv) == 1:
-        raise UserWarning("I need at least a destination directory")
-    elif len(argv) == 2:
-        src_dir = getcwd()
-        dst_dir = argv[1]
-    else:
-        src_dir, dst_dir = argv[1:3]
-
-    conflicts = fusion(src_dir, dst_dir)
-
-    for names in conflicts:
-        compare(*names)
