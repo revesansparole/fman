@@ -117,7 +117,7 @@ def action_store(*args, **kwds):
 
 
 action = dict(cbcovert=action_cbcovert,
-              bfmt=action_cbfmt,
+              cbfmt=action_cbfmt,
               cbsort=action_cbsort,
               cbtxt=action_cbtxt,
               cbz=action_cbz,
