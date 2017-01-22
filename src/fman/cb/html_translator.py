@@ -11,8 +11,8 @@ from string import Template
 from urllib.parse import quote
 from zipfile import ZipFile
 
-from fman.bd.book import Serie, Book
-from fman.bd import standard as std
+from fman.cb.book import Serie, Book
+from fman.cb import standard as std
 
 thumb_width = 80
 thumb_dir = "zzthumbnails"

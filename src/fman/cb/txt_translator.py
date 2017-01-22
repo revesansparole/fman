@@ -5,8 +5,8 @@ from glob import glob
 from os import mkdir, stat
 from os.path import exists, join
 
-from fman.bd.book import Serie, Book
-from fman.bd import standard as std
+from fman.cb.book import Serie, Book
+from fman.cb import standard as std
 
 txt_dir = "zztxt"
 

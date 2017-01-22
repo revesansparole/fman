@@ -4,6 +4,18 @@ from os import getcwd
 from fman.fmt_name import fmt_names
 from fman.fusion import compare, fusion
 from fman.integrity_scripts import check, store
+from fman.cb.cvt_to_cbz import cvt_files
+
+
+def action_cbz(*args, **kwds):
+    """Convert comic books into cbz files.
+    """
+    if len(args) == 0:
+        fnames = None
+    else:
+        fnames = args
+    del kwds  # unused
+    cvt_files(fnames)
 
 
 def action_check(*args, **kwds):

@@ -6,7 +6,7 @@ from os import rename
 from os.path import exists
 from sys import argv
 
-from fman.bd.book import Book
+from fman.cb.book import Book
 
 
 def fmt(filename):

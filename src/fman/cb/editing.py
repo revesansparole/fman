@@ -10,7 +10,7 @@ from glob import escape, glob
 from os.path import basename, exists, normpath, splitext
 from zipfile import ZipFile, ZIP_DEFLATED
 
-from fman.bd import standard as std
+from fman.cb import standard as std
 
 __all__ = ["create_cbz", "make_cbz"]
 

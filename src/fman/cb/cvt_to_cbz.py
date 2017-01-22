@@ -7,10 +7,9 @@ from os.path import basename, exists, join, splitext
 from re import escape
 from shutil import move, rmtree
 from subprocess import Popen, PIPE
-from sys import argv
 from zipfile import ZipFile, ZIP_DEFLATED, BadZipfile
 
-from fman.bd.editing import make_cbz
+from fman.cb.editing import make_cbz
 
 tmp_fld = ".tmp_fld"
 trash_fld = ".trash"
@@ -54,7 +53,7 @@ def cvt(filename):
     make_cbz(tmp_fld, "{}.cbz".format(fname))
 
 
-def main():
+def cvt_files(filenames=None):
     """Convert files in current directory or whose names have been
     passed on the command line.
     """
@@ -64,15 +63,9 @@ def main():
     if not exists(trash_fld):
         mkdir(trash_fld)
 
-    if len(argv) == 1:
+    if filenames is None:
         filenames = sorted(glob("*.pdf") + glob("*.cbr") + glob("*.rar"))
-    else:
-        filenames = argv[1:]
 
     for filename in filenames:
         print(filename)
         cvt(filename)
-
-
-if __name__ == "__main__":
-    main()
