@@ -41,7 +41,7 @@ def book_to_txt(book, level):
     # create element
     pre = "\t" * level
     txt = []
-    txt.append(pre + "{} ({:.1f} Mo)".format(name, bs))
+    txt.append(pre + "{} ({})({:.1f} Mo)".format(name, book.language, bs))
 
     return "\n".join(txt)
 
