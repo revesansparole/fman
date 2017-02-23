@@ -17,6 +17,7 @@ trash_fld = ".trash"
 
 def cvt(filename):
     fname, ext = splitext(filename)
+    ext = ext.lower()
 
     # test if already zipfile maybe with incorrect extensions
     # try:
