@@ -80,6 +80,9 @@ def make_cbz(dname, fname=None):
 
     for img_pth in filenames:
         img = Image.open(img_pth)
+        if img.mode == 'P':
+            img = img.convert("RGB")
+
         img.save("{}.jpg".format(splitext(img_pth)[0]))
 
     # find all jpg/png images in folder
