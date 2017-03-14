@@ -3,6 +3,7 @@
 
 import re
 from os.path import basename
+from unidecode import unidecode
 
 nb_fmt1 = "^([0-9]+)$"
 nb_fmt2 = "^([0-9]+.[0-9]+)$"
@@ -69,7 +70,9 @@ class Book(object):
         self.title = ""  # name of this issue
         self.language = None  # digram for country e.g. 'fr' or 'en'
         self.type = None  # file type
-        self.analyse(basename(filename).lower().replace("_", " "))
+        name = basename(filename).lower().replace("_", " ")
+        name = unidecode(name)
+        self.analyse(name)
 
     def __str__(self):
         """construct a formatted filename for this issue
