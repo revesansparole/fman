@@ -41,6 +41,11 @@
     ],
     "require": []
   },
+  "sphinx": {
+    "autodoc_dvlpt": true,
+    "build_dir": "build/sphinx",
+    "theme": "default"
+  },
   "test": {
     "suite_name": "pytest"
   },

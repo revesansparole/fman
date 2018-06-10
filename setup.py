@@ -39,6 +39,7 @@ setup_kwds = dict(
         "pytest",
         "pytest-cov",
         "pytest-mock",
+        "sphinx",
         ],
     entry_points={},
     keywords='',

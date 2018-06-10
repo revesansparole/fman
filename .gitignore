@@ -86,6 +86,9 @@ target/
 # coverage
 .coverage
 
+# sphinx autogen file
+doc/_dvlpt/
+
 
 # #}
 
