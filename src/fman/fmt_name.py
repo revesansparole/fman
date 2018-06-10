@@ -5,7 +5,7 @@ from os import rename
 from os.path import exists
 from unidecode import unidecode
 
-from fman import standard as std
+from . import standard as std
 
 
 def fmt(filename):

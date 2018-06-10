@@ -6,8 +6,8 @@ and check it against previously stored hash code.
 
 from os.path import exists
 
-from fman import integrity as igt
-from fman import standard as std
+from . import integrity as igt
+from . import standard as std
 
 
 def store(fnames):

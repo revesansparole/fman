@@ -12,7 +12,7 @@ from os.path import basename, exists, normpath, splitext
 from PIL import Image
 from zipfile import ZipFile, ZIP_DEFLATED
 
-from fman.cb import standard as std
+from . import standard as std
 
 __all__ = ["create_cbz", "extract_covert", "make_cbz"]
 

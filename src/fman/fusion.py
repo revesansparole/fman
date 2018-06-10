@@ -11,7 +11,7 @@ from os import mkdir
 from os.path import exists, getsize, join, isdir
 from shutil import copy
 
-from fman import standard as std
+from . import standard as std
 
 
 def fusion(src_dir, dst_dir):

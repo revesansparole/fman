@@ -2,13 +2,13 @@ from argparse import ArgumentParser, RawTextHelpFormatter
 from glob import glob
 from os import getcwd
 
-from fman.fmt_name import fmt_names
-from fman.fusion import compare, fusion
-from fman.integrity_scripts import check, store
-from fman.cb import fmt_name, txt_translator
-from fman.cb.cvt_to_cbz import cvt_files
-from fman.cb.editing import extract_covert
-from fman.cb.sort_file import sort_comix
+from .fmt_name import fmt_names
+from .fusion import compare, fusion
+from .integrity_scripts import check, store
+from .cb import fmt_name, txt_translator
+from .cb.cvt_to_cbz import cvt_files
+from .cb.editing import extract_covert
+from .cb.sort_file import sort_comix
 
 
 def action_cbcovert(*args, **kwds):

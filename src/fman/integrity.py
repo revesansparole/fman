@@ -8,7 +8,7 @@ high level functions to perform common operations.
 import hashlib
 from os.path import exists
 
-from fman import standard as std
+from . import standard as std
 
 __all__ = ["IOHashError", "compute_hash", "associate_hash", "check"]
 

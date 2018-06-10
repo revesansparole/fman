@@ -5,7 +5,7 @@ from glob import glob
 from os import mkdir, path, rename
 from os.path import exists
 
-from fman.cb.book import Book
+from .book import Book
 
 tmp_fld = ".tmp_fld"
 

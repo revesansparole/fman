@@ -9,7 +9,7 @@ from shutil import move, rmtree
 from subprocess import Popen, PIPE
 from zipfile import ZipFile, ZIP_DEFLATED, BadZipfile
 
-from fman.cb.editing import make_cbz
+from .editing import make_cbz
 
 tmp_fld = ".tmp_fld"
 trash_fld = ".trash"

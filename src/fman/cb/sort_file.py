@@ -8,8 +8,8 @@ from os.path import basename, exists, join
 from shutil import move
 from sys import argv
 
-from fman.integrity import associate_hash
-from fman.cb import standard as std
+from ..integrity import associate_hash
+from . import standard as std
 
 
 def sort(filename):

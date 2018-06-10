@@ -6,7 +6,7 @@ from os.path import exists, getsize, join, isdir
 from shutil import copy
 from sys import argv
 
-from fman import standard as std
+from . import standard as std
 
 
 def custom(src_dir, dst_dir):
