@@ -1,5 +1,7 @@
 # {# pkglts, pysetup
-mock
-nose
+coverage
+pytest
+pytest-cov
+pytest-mock
 
 # #}

@@ -3,7 +3,7 @@
     "auto_install": true,
     "install_front_end": "stdout",
     "use_prompts": false,
-    "version": 3
+    "version": 12
   },
   "base": {
     "authors": [
@@ -13,13 +13,17 @@
       ]
     ],
     "namespace": null,
+    "namespace_method": "pkg_util",
     "pkgname": "fman",
     "url": null
   },
+  "coverage": {},
   "doc": {
     "description": "file manager",
+    "fmt": "rst",
     "keywords": []
   },
+  "git": {},
   "github": {
     "owner": "{{ base.authors[0][0] }}",
     "project": "{{ base.pkgname }}",
@@ -37,7 +41,9 @@
     ],
     "require": []
   },
-  "test": {},
+  "test": {
+    "suite_name": "pytest"
+  },
   "version": {
     "major": 0,
     "minor": 1,

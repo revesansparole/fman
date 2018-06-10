@@ -9,38 +9,40 @@ from setuptools import setup, find_packages
 
 short_descr = "file manager"
 readme = open('README.rst').read()
-history = open('HISTORY.rst').read().replace('.. :changelog:', '')
+history = open('HISTORY.rst').read()
 
+# find packages
+pkgs = find_packages('src')
 
-# find version number in src/fman/version.py
-version = {}
-with open("src/fman/version.py") as fp:
-    exec(fp.read(), version)
 
 
 setup_kwds = dict(
     name='fman',
-    version=version["__version__"],
+    version="0.1.0",
     description=short_descr,
     long_description=readme + '\n\n' + history,
-    author="revesansparole, ",
-    author_email="revesansparole@gmail.com, ",
+    author="revesansparole",
+    author_email="revesansparole@gmail.com",
     url='https://github.com/revesansparole/fman',
     license='mit',
     zip_safe=False,
 
-    packages=find_packages('src'),
+    packages=pkgs,
     package_dir={'': 'src'},
+    setup_requires=[
+        "pytest-runner",
+        ],
     install_requires=[
         ],
     tests_require=[
-        "mock",
-        "nose",
+        "coverage",
+        "pytest",
+        "pytest-cov",
+        "pytest-mock",
         ],
     entry_points={},
     keywords='',
-    test_suite='nose.collector',
-)
+    )
 # #}
 # change setup_kwds below before the next pkglts tag
 

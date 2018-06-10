@@ -1,4 +1,4 @@
-# {# pkglts, github
+# {# pkglts, git
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -80,11 +80,14 @@ target/
 
 # svn
 .svn
+.cache/
+.pytest_cache/
 
+# coverage
+.coverage
 
 
 # #}
 
 # user custom filters
-wip/*
 
