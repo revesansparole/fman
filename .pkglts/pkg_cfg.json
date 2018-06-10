@@ -39,7 +39,11 @@
     "intended_versions": [
       "36"
     ],
-    "require": []
+    "require": [
+      {
+        "name": "unidecode"
+      }
+    ]
   },
   "sphinx": {
     "autodoc_dvlpt": true,

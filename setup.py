@@ -33,6 +33,7 @@ setup_kwds = dict(
         "pytest-runner",
         ],
     install_requires=[
+        "unidecode",
         ],
     tests_require=[
         "coverage",
