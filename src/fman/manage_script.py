@@ -32,7 +32,7 @@ def action_fusion(**kwds):
     src = Path(kwds['src'])
     dst = Path(kwds['dst'])
 
-    conflicts = fusion(str(src), str(dst))
+    conflicts = fusion(src, dst)
 
     for names in conflicts:
         compare(*names)

@@ -4,8 +4,6 @@ Based on sha512 algorithm to compute the hash code of files
 and check it against previously stored hash code.
 """
 
-from os.path import exists
-
 from . import integrity as igt
 from . import standard as std
 
@@ -27,15 +25,14 @@ def store(pth):
         None
     """
     if pth.is_dir():
-        for sub_pth in pth.glob("*"):
-            if not std.is_hashname(str(sub_pth)):
-                hname = std.hashname(str(sub_pth))
-                if not exists(hname):
-                    print(f"storing: {sub_pth}")
-                    igt.associate_hash(str(sub_pth))
+        for sub_pth in std.walk_files(pth):
+            hash_pth = std.hashname(sub_pth)
+            if not hash_pth.exists():
+                print(f"storing: {sub_pth}")
+                igt.associate_hash(str(sub_pth))
     else:
-        hname = std.hashname(str(pth))
-        if not exists(hname):
+        hash_pth = std.hashname(pth)
+        if not hash_pth.exists():
             print(f"storing: {pth}")
             igt.associate_hash(str(pth))
 
@@ -52,13 +49,12 @@ def check(pth):
         None: result printed on console
     """
     if pth.is_dir():
-        for sub_pth in pth.glob("*"):
-            if not std.is_hashname(str(sub_pth)):
-                try:
-                    valid = "valid:  " if igt.check(str(sub_pth)) else "corrupt:"
-                    print(f"{valid} {sub_pth}")
-                except igt.IOHashError:
-                    print(f"no valid hash found: {sub_pth}")
+        for sub_pth in std.walk_files(pth):
+            try:
+                valid = "valid:  " if igt.check(str(sub_pth)) else "corrupt:"
+                print(f"{valid} {sub_pth}")
+            except igt.IOHashError:
+                print(f"no valid hash found: {sub_pth}")
 
     else:
         try:
