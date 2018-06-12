@@ -30,27 +30,29 @@ def store(fnames):
             igt.associate_hash(fname)
 
 
-def check(fnames):
+def check(pth):
     """Check integrity of files.
 
+    Notes: if pth is a directory, all files in it will be recursively checked
+
     Args:
-        fnames (list of str):
+        pth (Path): path to check.
 
     Returns:
         None: result printed on console
     """
-    invalids = []
-    for fname in std.walk_files(fnames):
-        try:
-            valid = igt.check(fname)
-            print(valid, fname)
-            if not valid:
-                print("pb with: {}".format(fname))
-                invalids.append(fname)
-        except igt.IOHashError:
-            print(fname, "no valid hash found")
+    if pth.is_dir():
+        for sub_pth in pth.glob("*"):
+            if not std.is_hashname(str(sub_pth)):
+                try:
+                    valid = igt.check(str(sub_pth))
+                    print(f"{sub_pth}: {valid}")
+                except igt.IOHashError:
+                    print(f"{sub_pth}: no valid hash found")
 
-    if len(invalids) > 0:
-        print("\n\n\n\nInvalids")
-        for name in invalids:
-            print(name)
+    else:
+        try:
+            valid = igt.check(str(pth))
+            print(f"{pth}: {valid}")
+        except igt.IOHashError:
+            print(f"{pth}: no valid hash found")
