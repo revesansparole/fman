@@ -44,15 +44,11 @@ def action_fusion(*args, **kwds):
         compare(*names)
 
 
-def action_store(*args, **kwds):
-    """Associate hash to filenames.
+def action_store(**kwds):
+    """Associate hash to files.
     """
-    if len(args) == 0:
-        fnames = ["."]
-    else:
-        fnames = args
-    del kwds  # unused
-    store(fnames)
+    pth = Path(kwds['pth'])
+    store(pth)
 
 
 def main():
@@ -70,6 +66,9 @@ def main():
 
     parser_check = subparsers.add_parser('check', help=action_check.__doc__)
     parser_check.add_argument('pth', help="Path to check. If pth is a dir, all files will be recursively checked")
+
+    parser_store = subparsers.add_parser('store', help=action_store.__doc__)
+    parser_store.add_argument('pth', help="Path to store. If pth is a dir, all files will be recursively checked")
 
     kwds = vars(parser.parse_args())
     logging_tools.main(kwds.pop('verbosity'))
