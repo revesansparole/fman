@@ -8,6 +8,13 @@ from . import integrity as igt
 from . import standard as std
 
 
+def _store(pth):
+    hash_pth = std.hashname(pth)
+    if not hash_pth.exists():
+        print(f"storing: {pth}")
+        igt.associate_hash(pth)
+
+
 def store(pth):
     """Associate a hash to a file.
 
@@ -26,15 +33,17 @@ def store(pth):
     """
     if pth.is_dir():
         for sub_pth in std.walk_files(pth):
-            hash_pth = std.hashname(sub_pth)
-            if not hash_pth.exists():
-                print(f"storing: {sub_pth}")
-                igt.associate_hash(str(sub_pth))
+            _store(sub_pth)
     else:
-        hash_pth = std.hashname(pth)
-        if not hash_pth.exists():
-            print(f"storing: {pth}")
-            igt.associate_hash(str(pth))
+        _store(pth)
+
+
+def _check(pth):
+    try:
+        valid = "valid:  " if igt.check(pth) else "corrupt:"
+        print(f"{valid} {pth}")
+    except igt.IOHashError:
+        print(f"no valid hash found: {pth}")
 
 
 def check(pth):
@@ -50,15 +59,6 @@ def check(pth):
     """
     if pth.is_dir():
         for sub_pth in std.walk_files(pth):
-            try:
-                valid = "valid:  " if igt.check(str(sub_pth)) else "corrupt:"
-                print(f"{valid} {sub_pth}")
-            except igt.IOHashError:
-                print(f"no valid hash found: {sub_pth}")
-
+            _check(sub_pth)
     else:
-        try:
-            valid = "valid:  " if igt.check(str(pth)) else "corrupt:"
-            print(f"{valid} {pth}")
-        except igt.IOHashError:
-            print(f"no valid hash found: {pth}")
+        _check(pth)
