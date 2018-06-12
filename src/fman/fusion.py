@@ -7,8 +7,6 @@ Two main functions:
   - compare: internally used to compare attributes of two files
 """
 
-from os import mkdir
-from os.path import exists, getsize, join, isdir
 from shutil import copy
 
 from . import standard as std
@@ -27,7 +25,6 @@ def fusion(src_dir, dst_dir):
     Returns:
       List of file names present in src_dir and already existing in dst_dir.
     """
-    # nb = len(src_dir) + 1
     conflicted = []
 
     for src_pth in std.walk(src_dir):
@@ -35,10 +32,7 @@ def fusion(src_dir, dst_dir):
         dst_pth = dst_dir / src_pth.relative_to(src_dir)
 
         if src_pth.is_dir():  # directory case
-            if dst_pth.exists():
-                # do nothing
-                pass
-            else:
+            if not dst_pth.exists():
                 print(f"create: {dst_pth}")
                 dst_pth.mkdir()
         else:  # file case
@@ -50,10 +44,10 @@ def fusion(src_dir, dst_dir):
                 with open(std.hashname(src_pth), 'rb') as f:
                     src_hash = f.read()
 
-                if std.hashname(dst_pth).exists():
+                try:
                     with open(std.hashname(dst_pth), 'rb') as f:
                         dst_hash = f.read()
-                else:
+                except FileNotFoundError:
                     dst_hash = ""
 
                 if src_hash == dst_hash:
@@ -74,8 +68,8 @@ def compare(src_pth, dst_pth):
     """Compare attribute of a file both in src and dst.
     """
     # size comparison
-    src_size = getsize(src_pth)
-    dst_size = getsize(dst_pth)
+    src_size = src_pth.stat().st_size
+    dst_size = dst_pth.stat().st_size
     if src_size == dst_size:
         sym = '='
     elif src_size > dst_size:

@@ -1,5 +1,4 @@
 from argparse import ArgumentParser
-from os import getcwd
 from pathlib import Path
 
 from . import logging_tools
