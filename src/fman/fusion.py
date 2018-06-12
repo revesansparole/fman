@@ -15,43 +15,42 @@ from . import standard as std
 
 
 def fusion(src_dir, dst_dir):
-    """Fusion the files in src with the content of dst.
+    """Fusion the content of two directories.
 
     Copy files or directories present exclusively in src into dst.
     In case of files, copy also their associated hash file.
 
     Args:
-      src_dir (str): reference directory path.
-      dst_dir (str): directory files will be copied into.
+      src_dir (Path): reference directory path.
+      dst_dir (Path): directory files will be copied into.
 
     Returns:
       List of file names present in src_dir and already existing in dst_dir.
     """
-    nb = len(src_dir) + 1
+    # nb = len(src_dir) + 1
     conflicted = []
 
-    for src_pth in std.walk([src_dir]):
+    for src_pth in std.walk(src_dir):
         # get corresponding dst path
-        dst_pth = join(dst_dir, src_pth[nb:])
+        dst_pth = dst_dir / src_pth.relative_to(src_dir)
 
-        if isdir(src_pth):  # directory case
-            if exists(dst_pth):
+        if src_pth.is_dir():  # directory case
+            if dst_pth.exists():
                 # do nothing
                 pass
             else:
-                print("create: {}".format(dst_pth))
-                mkdir(dst_pth)
+                print(f"create: {dst_pth}")
+                dst_pth.mkdir()
         else:  # file case
-            if not exists(std.hashname(src_pth)):
-                msg = "file does not have asociated hash:\n{}".format(src_pth)
-                raise UserWarning(msg)
+            if not std.hashname(src_pth).exists():
+                raise UserWarning(f"file does not have associated hash:\n{src_pth}")
 
-            if exists(dst_pth):
+            if dst_pth.exists():
                 # check associated hash
                 with open(std.hashname(src_pth), 'rb') as f:
                     src_hash = f.read()
 
-                if exists(std.hashname(dst_pth)):
+                if std.hashname(dst_pth).exists():
                     with open(std.hashname(dst_pth), 'rb') as f:
                         dst_hash = f.read()
                 else:
@@ -64,7 +63,7 @@ def fusion(src_dir, dst_dir):
                 else:
                     conflicted.append((src_pth, dst_pth))
             else:
-                print("copy: {}".format(src_pth))
+                print(f"copy: {src_pth}")
                 copy(src_pth, dst_pth)
                 copy(std.hashname(src_pth), std.hashname(dst_pth))
 
