@@ -26,19 +26,13 @@ def action_fmt_names(*args, **kwds):
     fmt_names(fnames)
 
 
-def action_fusion(*args, **kwds):
+def action_fusion(**kwds):
     """Attempt to fusion the content of two directories.
     """
-    if len(args) == 0:
-        raise UserWarning("I need at least a destination directory")
-    elif len(args) == 1:
-        src_dir = getcwd()
-        dst_dir = args[0]
-    else:
-        src_dir, dst_dir = args[:2]
-    del kwds  # unused
+    src = Path(kwds['src'])
+    dst = Path(kwds['dst'])
 
-    conflicts = fusion(src_dir, dst_dir)
+    conflicts = fusion(str(src), str(dst))
 
     for names in conflicts:
         compare(*names)
@@ -69,6 +63,10 @@ def main():
 
     parser_store = subparsers.add_parser('store', help=action_store.__doc__)
     parser_store.add_argument('pth', help="Path to store. If pth is a dir, all files will be recursively checked")
+
+    parser_fusion = subparsers.add_parser('fusion', help=action_fusion.__doc__)
+    parser_fusion.add_argument('src', help="Path of source directory")
+    parser_fusion.add_argument('dst', help="Path of destination directory")
 
     kwds = vars(parser.parse_args())
     logging_tools.main(kwds.pop('verbosity'))
