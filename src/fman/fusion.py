@@ -83,7 +83,10 @@ def compare(src_pth, dst_pth):
         sym = '>'
     else:
         sym = '<'
-    ssize = src_size / 1024 ** 2
-    dsize = dst_size / 1024 ** 2
     print("{} -> {}".format(src_pth, dst_pth))
-    print("          {:.1f} Mo {} {:.1f} Mo".format(ssize, sym, dsize))
+    if src_size < 1024 and dst_size < 1024:
+        print("          {:d} o {} {:d} o".format(src_size, sym, dst_size))
+    elif src_size < 1024 ** 2 and dst_size < 1024 ** 2:
+        print("          {:.1f} ko {} {:.1f} ko".format(src_size / 1024, sym, dst_size / 1024))
+    else:
+        print("          {:.1f} Mo {} {:.1f} Mo".format(src_size / 1024 ** 2, sym, dst_size / 1024 ** 2))
