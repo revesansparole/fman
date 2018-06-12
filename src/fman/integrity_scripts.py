@@ -10,24 +10,34 @@ from . import integrity as igt
 from . import standard as std
 
 
-def store(fnames):
-    """Associate a hash file to a given file in order
-    to store it and check later the lack of corruption
-    of the data.
+def store(pth):
+    """Associate a hash to a file.
 
-    if the file already has a hashfile associated, does nothing
+    Store the hash of file content in a companion file in order
+    to store it and check later the lack of corruption of the data.
+
+    if the file already has a hashfile associated, does nothing.
+
+    Notes: if pth is a directory, all files in it will be recursively checked
 
     Args:
-        fnames (list of str):
+        pth (Path): path to store.
 
     Returns:
         None
     """
-    for fname in std.walk_files(fnames):
-        hname = std.hashname(fname)
+    if pth.is_dir():
+        for sub_pth in pth.glob("*"):
+            if not std.is_hashname(str(sub_pth)):
+                hname = std.hashname(str(sub_pth))
+                if not exists(hname):
+                    print(f"storing: {sub_pth}")
+                    igt.associate_hash(str(sub_pth))
+    else:
+        hname = std.hashname(str(pth))
         if not exists(hname):
-            print("{}".format(fname))
-            igt.associate_hash(fname)
+            print(f"storing: {pth}")
+            igt.associate_hash(str(pth))
 
 
 def check(pth):
@@ -45,14 +55,14 @@ def check(pth):
         for sub_pth in pth.glob("*"):
             if not std.is_hashname(str(sub_pth)):
                 try:
-                    valid = igt.check(str(sub_pth))
-                    print(f"{sub_pth}: {valid}")
+                    valid = "valid:  " if igt.check(str(sub_pth)) else "corrupt:"
+                    print(f"{valid} {sub_pth}")
                 except igt.IOHashError:
-                    print(f"{sub_pth}: no valid hash found")
+                    print(f"no valid hash found: {sub_pth}")
 
     else:
         try:
-            valid = igt.check(str(pth))
-            print(f"{pth}: {valid}")
+            valid = "valid:  " if igt.check(str(pth)) else "corrupt:"
+            print(f"{valid} {pth}")
         except igt.IOHashError:
-            print(f"{pth}: no valid hash found")
+            print(f"no valid hash found: {pth}")
