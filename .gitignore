@@ -83,8 +83,15 @@ target/
 .cache/
 .pytest_cache/
 
+# coverage
+.coverage
+
+# sphinx autogen file
+doc/_dvlpt/
+
 
 # #}
 
 # user custom filters
 wip/
+

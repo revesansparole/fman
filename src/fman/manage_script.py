@@ -1,80 +1,18 @@
-from argparse import ArgumentParser, RawTextHelpFormatter
-from glob import glob
+from argparse import ArgumentParser
 from os import getcwd
+from pathlib import Path
 
+from . import logging_tools
 from .fmt_name import fmt_names
 from .fusion import compare, fusion
 from .integrity_scripts import check, store
-from .cb import fmt_name, txt_translator
-from .cb.cvt_to_cbz import cvt_files
-from .cb.editing import extract_covert
-from .cb.sort_file import sort_comix
 
 
-def action_cbcovert(*args, **kwds):
-    """Generate one covert per comic book.
-    """
-    del kwds  # unused
-    if len(args) == 0:
-        filenames = sorted(glob("*.cbz"))
-    else:
-        filenames = args
-
-    for fname in filenames:
-        print(fname)
-        extract_covert(fname)
-
-
-def action_cbfmt(*args, **kwds):
-    """Format name of comix book.
-    """
-    if len(args) == 0:
-        fnames = None
-    else:
-        fnames = args
-    del kwds  # unused
-    fmt_name.main(fnames)
-
-
-def action_cbsort(*args, **kwds):
-    """Sort comic books in alphabetical folders.
-    """
-    if len(args) == 0:
-        fnames = None
-    else:
-        fnames = args
-    del kwds  # unused
-    sort_comix(fnames)
-
-
-def action_cbtxt(*args, **kwds):
-    """Format comix list into txt.
-    """
-    del args  # unused
-    del kwds  # unused
-    txt_translator.main()
-
-
-def action_cbz(*args, **kwds):
-    """Convert comic books into cbz files.
-    """
-    if len(args) == 0:
-        fnames = None
-    else:
-        fnames = args
-    del kwds  # unused
-    cvt_files(fnames)
-
-
-def action_check(*args, **kwds):
+def action_check(**kwds):
     """Check whether files are still valid.
     """
-    if len(args) == 0:
-        fnames = ["."]
-    else:
-        fnames = args
-    del kwds  # unused
-    check(fnames)
+    pth = Path(kwds['pth'])
+    check(pth)
 
 
 def action_fmt_names(*args, **kwds):
@@ -117,43 +55,29 @@ def action_store(*args, **kwds):
     store(fnames)
 
 
-action = dict(cbcovert=action_cbcovert,
-              cbfmt=action_cbfmt,
-              cbsort=action_cbsort,
-              cbtxt=action_cbtxt,
-              cbz=action_cbz,
-              check=action_check,
-              fmt=action_fmt_names,
-              fusion=action_fusion,
-              store=action_store)
-
-
 def main():
-    parser = ArgumentParser(description='File handling manager',
-                            formatter_class=RawTextHelpFormatter)
+    """Run CLI evaluation"""
+    action = dict(check=action_check,
+                  fmt=action_fmt_names,
+                  fusion=action_fusion,
+                  store=action_store)
 
-    act_help = "type of action performed by fman, one of:\n"
-    for name, func in action.items():
-        act_help += "\n  - %s: %s" % (name, func.__doc__)
+    parser = ArgumentParser(description="File handling manager")
+    parser.add_argument("-v", "--verbosity", action="count", default=0,
+                        help="increase output verbosity")
 
-    parser.add_argument('action', metavar='action',
-                        choices=tuple(action.keys()),
-                        help=act_help)
+    subparsers = parser.add_subparsers(dest='subcmd', help='sub-command help')
 
-    parser.add_argument('action_args', nargs='*',
-                        help="List of files to perform action onto")
+    parser_check = subparsers.add_parser('check', help=action_check.__doc__)
+    parser_check.add_argument('pth', help="Path to check. If pth is a dir, all files will be recursively checked")
 
-    parser.add_argument('-e', metavar='extra', nargs=2, action='append',
-                        help='extra arguments to pass to the action',
-                        dest='extra')
+    kwds = vars(parser.parse_args())
+    logging_tools.main(kwds.pop('verbosity'))
 
-    args = parser.parse_args()
-    if args.extra is None:
-        extra = {}
-    else:
-        extra = dict(args.extra)
+    # perform action
+    subcmd = kwds.pop('subcmd')
 
-    action[args.action](*args.action_args, **extra)
+    action[subcmd](**kwds)
 
 
 if __name__ == '__main__':
