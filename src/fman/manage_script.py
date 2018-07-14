@@ -3,6 +3,7 @@ from pathlib import Path
 
 from . import logging_tools
 from .cb.cvt_to_cbz import cvt_files
+from .cb.editing import extract_cover
 from .cb.fmt_name import fmt_cbz
 from .cb.sort_file import sort_comics
 from .fmt_name import fmt_names
@@ -64,6 +65,17 @@ def action_cb_sort(**kwds):
     sort_comics(pth)
 
 
+def action_cb_cover(**kwds):
+    """Extract cover of cbz files in current working directory.
+    """
+    pth = Path(kwds['pth'])
+    if pth.is_dir():
+        for sub_pth in pth.glob("*.cbz"):
+            extract_cover(sub_pth)
+    else:
+        extract_cover(pth)
+
+
 def main():
     """Run CLI evaluation"""
     action = dict(check=action_check,
@@ -72,7 +84,8 @@ def main():
                   store=action_store,
                   cbfmt=action_cb_fmt,
                   cbz=action_cb_cvt,
-                  cbsort=action_cb_sort)
+                  cbsort=action_cb_sort,
+                  cbcover=action_cb_cover)
 
     parser = ArgumentParser(description="File handling manager")
     parser.add_argument("-v", "--verbosity", action="count", default=0,
@@ -101,6 +114,9 @@ def main():
 
     parser_cbsort = subparsers.add_parser('cbsort', help=action_cb_sort.__doc__)
     parser_cbsort.add_argument('pth', help="Path to sort. If pth is a dir, all file will be recursively formatted")
+
+    parser_cbcover = subparsers.add_parser('cbcover', help=action_cb_cover.__doc__)
+    parser_cbcover.add_argument('pth', help="Path to comics. If pth is a dir, all file will be recursively formatted")
 
     kwds = vars(parser.parse_args())
     logging_tools.main(kwds.pop('verbosity'))
