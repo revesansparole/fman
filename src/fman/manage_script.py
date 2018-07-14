@@ -5,6 +5,7 @@ from . import logging_tools
 from .fmt_name import fmt_names
 from .fusion import compare, fusion
 from .integrity_scripts import check, store
+from .cb.fmt_name import fmt_cbz
 
 
 def action_check(**kwds):
@@ -40,12 +41,20 @@ def action_store(**kwds):
     store(pth)
 
 
+def action_cb_fmt(**kwds):
+    """Format cbz file names.
+    """
+    pth = Path(kwds['pth'])
+    fmt_cbz(pth)
+
+
 def main():
     """Run CLI evaluation"""
     action = dict(check=action_check,
                   fmt=action_fmt_names,
                   fusion=action_fusion,
-                  store=action_store)
+                  store=action_store,
+                  cbfmt=action_cb_fmt)
 
     parser = ArgumentParser(description="File handling manager")
     parser.add_argument("-v", "--verbosity", action="count", default=0,
@@ -64,6 +73,9 @@ def main():
     parser_fusion.add_argument('dst', help="Path of destination directory")
 
     parser_store = subparsers.add_parser('fmt', help=action_fmt_names.__doc__)
+    parser_store.add_argument('pth', help="Path to format. If pth is a dir, all file will be recursively formatted")
+
+    parser_store = subparsers.add_parser('cbfmt', help=action_cb_fmt.__doc__)
     parser_store.add_argument('pth', help="Path to format. If pth is a dir, all file will be recursively formatted")
 
     kwds = vars(parser.parse_args())
