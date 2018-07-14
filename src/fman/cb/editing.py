@@ -5,51 +5,49 @@ examples:
  - remove a page from a cbz file
  - change image format in cbz file
 """
-
-from glob import escape, glob
 from io import BytesIO
-from os.path import basename, exists, normpath, splitext
+from pathlib import Path
+from zipfile import ZIP_DEFLATED, ZipFile
+
 from PIL import Image
-from zipfile import ZipFile, ZIP_DEFLATED
 
 from . import standard as std
 
 __all__ = ["create_cbz", "extract_covert", "make_cbz"]
 
 
-def create_cbz(fname, images):
+def create_cbz(outpth, pages):
     """Create a cbz file from a list of image files.
 
     Args:
-        fname (str): name of created cbz file
-                     extension will be added if needed
-        images (list of str): ordered list of path of image files
+        pth (Path): path to cbz file that will be created
+        pages (list of Path): ordered list of path of image files
 
     Returns:
         None
 
     Raises:
-        FileExistsError: if fname is already existing
+        FileExistsError: if pth already exists
     """
-    if not fname.endswith(".cbz"):
-        fname += ".cbz"
+    if outpth.suffix != ".cbz":
+        outpth = outpth.with_suffix(".cbz")
 
-    if exists(fname):
-        raise FileExistsError("CBZ file '{}' already exists".format(fname))
+    if outpth.exists():
+        raise FileExistsError(f"CBZ file '{outpth}' already exists")
 
-    zf = ZipFile(fname, 'w', ZIP_DEFLATED)
-    for i, name in enumerate(images):
-        zf.write(name, "page{:04d}{}".format(i, splitext(name)[1]))
+    zf = ZipFile(outpth, 'w', ZIP_DEFLATED)
+    for i, pth in enumerate(pages):
+        zf.write(pth, f"page{i:04d}{pth.suffix}")
 
     zf.close()
 
 
-def make_cbz(dname, fname=None):
+def make_cbz(dir_pth, pth=None):
     """Create a cbz file with the image content of a directory.
 
     Args:
-        dname (str): a path to a directory
-        fname (str): name of created cbz file
+        dir_pth (Path): a path to a directory
+        pth (Path): name of created cbz file
                      extension will be added if needed
                      if None, use the last component of dname as fname
 
@@ -57,66 +55,62 @@ def make_cbz(dname, fname=None):
         None
 
     Raises:
-        FileExistsError: if fname is already existing
+        FileExistsError: if pth already exists
         FileNotFoundError: if directory is empty
     """
-    dname = normpath(dname)
-
     # format cbz name
-    if fname is None:
-        fname = basename(dname)
+    if pth is None:
+        pth = Path(dir_pth.name)
 
-    if not fname.endswith(".cbz"):
-        fname += ".cbz"
+    if pth.suffix != ".cbz":
+        pth = pth.with_suffix(".cbz")
 
-    if exists(fname):
-        raise FileExistsError("CBZ file '{}' already exists".format(fname))
+    if pth.exists():
+        raise FileExistsError(f"CBZ file '{pth}' already exists")
 
     # find image files that need conversion
-    filenames = []
+    to_cvt = set()
     for ext in std.img_ext_needing_cvt:
-        filenames.extend(glob("{}/*.{}".format(escape(dname), ext)))
-        filenames.extend(glob("{}/*.{}".format(escape(dname), ext.upper())))
+        to_cvt.update(dir_pth.glob(f"*.{ext}"))
+        to_cvt.update(dir_pth.glob(f"*.{ext.upper()}"))
 
-    for img_pth in filenames:
+    for img_pth in to_cvt:
         img = Image.open(img_pth)
         if img.mode == 'P':
             img = img.convert("RGB")
 
-        img.save("{}.jpg".format(splitext(img_pth)[0]))
+        img.save(img_pth.with_suffix(".jpg"))
 
     # find all jpg/png images in folder
-    filenames = []
+    pages = set()
     for ext in ("jpg", "png"):
-        filenames.extend(glob("{}/*.{}".format(escape(dname), ext)))
-        # uncomment for linux
-        # filenames.extend(glob("{}/*.{}".format(escape(dname), ext.upper())))
+        pages.update(dir_pth.glob(f"*.{ext}"))
+        pages.update(dir_pth.glob(f"*.{ext.upper()}"))
 
-    if len(filenames) == 0:
-        msg = "Directory '{}' does not contain any image file".format(dname)
+    if len(pages) == 0:
+        msg = f"Directory '{dir_pth}' does not contain any image file"
         raise FileNotFoundError(msg)
 
     # create cbz
-    create_cbz(fname, sorted(filenames))
+    create_cbz(pth, sorted(pages))
 
 
 def extract_covert(cbzpth):
     """Extract first page of cbz file.
 
     Args:
-        cbzpth (str): path to cbz file
+        cbzpth (Path): path to cbz file
 
     Returns:
-        (None): register image with same name than comix
+        (None): register image with same name than comics
     """
-    cbz_name, ext = splitext(cbzpth)
-    assert ext == ".cbz"
+    assert cbzpth.suffix == ".cbz"
 
     zf = ZipFile(cbzpth, 'r')
-    imgfiles = [name for name in zf.namelist() \
-                if splitext(name)[1].lower()[1:] in std.img_exts]
-    imgfiles.sort()
+    pages = [pth for pth in zf.namelist()
+             if Path(pth).suffix.lower()[1:] in std.img_exts]
+    pages.sort()
 
-    img_data = zf.read(imgfiles[0])
+    img_data = zf.read(pages[0])
     img = Image.open(BytesIO(img_data))
-    img.save("{}.jpg".format(cbz_name))
+    img.save(cbzpth.with_suffix(".jpg"))
