@@ -95,7 +95,7 @@ def make_cbz(dir_pth, pth=None):
     create_cbz(pth, sorted(pages))
 
 
-def extract_covert(cbzpth):
+def extract_cover(cbzpth):
     """Extract first page of cbz file.
 
     Args:
