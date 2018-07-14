@@ -93,11 +93,11 @@ def main():
     parser_fmt = subparsers.add_parser('fmt', help=action_fmt_names.__doc__)
     parser_fmt.add_argument('pth', help="Path to format. If pth is a dir, all file will be recursively formatted")
 
-    parser_cbfmt = subparsers.add_parser('cbfmt', help=action_cb_fmt.__doc__)
-    parser_cbfmt.add_argument('pth', help="Path to format. If pth is a dir, all file will be recursively formatted")
-
     parser_cbz = subparsers.add_parser('cbz', help=action_cb_cvt.__doc__)
     parser_cbz.add_argument('pth', help="Path to convert. If pth is a dir, all file will be recursively formatted")
+
+    parser_cbfmt = subparsers.add_parser('cbfmt', help=action_cb_fmt.__doc__)
+    parser_cbfmt.add_argument('pth', help="Path to format. If pth is a dir, all file will be recursively formatted")
 
     parser_cbsort = subparsers.add_parser('cbsort', help=action_cb_sort.__doc__)
     parser_cbsort.add_argument('pth', help="Path to sort. If pth is a dir, all file will be recursively formatted")
