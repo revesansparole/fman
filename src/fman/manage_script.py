@@ -2,11 +2,12 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 from . import logging_tools
+from .cb.cvt_to_cbz import cvt_files
+from .cb.fmt_name import fmt_cbz
+from .cb.sort_file import sort_comics
 from .fmt_name import fmt_names
 from .fusion import compare, fusion
 from .integrity_scripts import check, store
-from .cb.fmt_name import fmt_cbz
-from .cb.cvt_to_cbz import cvt_files
 
 
 def action_check(**kwds):
@@ -56,6 +57,13 @@ def action_cb_cvt(**kwds):
     cvt_files(pth)
 
 
+def action_cb_sort(**kwds):
+    """Sort cbz files into dirs.
+    """
+    pth = Path(kwds['pth'])
+    sort_comics(pth)
+
+
 def main():
     """Run CLI evaluation"""
     action = dict(check=action_check,
@@ -63,7 +71,8 @@ def main():
                   fusion=action_fusion,
                   store=action_store,
                   cbfmt=action_cb_fmt,
-                  cbz=action_cb_cvt)
+                  cbz=action_cb_cvt,
+                  cbsort=action_cb_sort)
 
     parser = ArgumentParser(description="File handling manager")
     parser.add_argument("-v", "--verbosity", action="count", default=0,
@@ -81,14 +90,17 @@ def main():
     parser_fusion.add_argument('src', help="Path of source directory")
     parser_fusion.add_argument('dst', help="Path of destination directory")
 
-    parser_store = subparsers.add_parser('fmt', help=action_fmt_names.__doc__)
-    parser_store.add_argument('pth', help="Path to format. If pth is a dir, all file will be recursively formatted")
+    parser_fmt = subparsers.add_parser('fmt', help=action_fmt_names.__doc__)
+    parser_fmt.add_argument('pth', help="Path to format. If pth is a dir, all file will be recursively formatted")
 
-    parser_store = subparsers.add_parser('cbfmt', help=action_cb_fmt.__doc__)
-    parser_store.add_argument('pth', help="Path to format. If pth is a dir, all file will be recursively formatted")
+    parser_cbfmt = subparsers.add_parser('cbfmt', help=action_cb_fmt.__doc__)
+    parser_cbfmt.add_argument('pth', help="Path to format. If pth is a dir, all file will be recursively formatted")
 
-    parser_store = subparsers.add_parser('cbz', help=action_cb_cvt.__doc__)
-    parser_store.add_argument('pth', help="Path to convert. If pth is a dir, all file will be recursively formatted")
+    parser_cbz = subparsers.add_parser('cbz', help=action_cb_cvt.__doc__)
+    parser_cbz.add_argument('pth', help="Path to convert. If pth is a dir, all file will be recursively formatted")
+
+    parser_cbsort = subparsers.add_parser('cbsort', help=action_cb_sort.__doc__)
+    parser_cbsort.add_argument('pth', help="Path to sort. If pth is a dir, all file will be recursively formatted")
 
     kwds = vars(parser.parse_args())
     logging_tools.main(kwds.pop('verbosity'))

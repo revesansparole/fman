@@ -1,5 +1,6 @@
 """Defines standard paths and components for the library.
 """
+from pathlib import Path
 
 
 def dirname(cbzname):
@@ -7,7 +8,7 @@ def dirname(cbzname):
     if dname in "0123456789":
         dname = "0"
 
-    return dname
+    return Path(dname)
 
 
 # extension of files recognized as images
