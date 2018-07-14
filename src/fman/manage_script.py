@@ -14,15 +14,11 @@ def action_check(**kwds):
     check(pth)
 
 
-def action_fmt_names(*args, **kwds):
+def action_fmt_names(**kwds):
     """Rename files with normalized names.
     """
-    if len(args) == 0:
-        fnames = ["."]
-    else:
-        fnames = args
-    del kwds  # unused
-    fmt_names(fnames)
+    pth = Path(kwds['pth'])
+    fmt_names(pth)
 
 
 def action_fusion(**kwds):
@@ -66,6 +62,9 @@ def main():
     parser_fusion = subparsers.add_parser('fusion', help=action_fusion.__doc__)
     parser_fusion.add_argument('src', help="Path of source directory")
     parser_fusion.add_argument('dst', help="Path of destination directory")
+
+    parser_store = subparsers.add_parser('fmt', help=action_fmt_names.__doc__)
+    parser_store.add_argument('pth', help="Path to format. If pth is a dir, all file will be recursively formatted")
 
     kwds = vars(parser.parse_args())
     logging_tools.main(kwds.pop('verbosity'))

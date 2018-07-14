@@ -1,46 +1,47 @@
 """Script used to normalize names of cbz files.
 """
-
 from os import rename
-from os.path import exists
+
 from unidecode import unidecode
 
 from . import standard as std
 
 
-def fmt(filename):
+def fmt(pth):
     """Rename file with normalized name.
 
     Warning: bug when changing the name of a directory
 
     Args:
-      filename (str):
+      pth (Path): Path to file requiring formatting
 
     Returns:
       (None)
     """
-    name = filename.lower()
+    name = pth.name.lower()
     name = name.replace("_", " ")
     name = unidecode(name)
 
-    if name != filename:
-        if exists(name):
-            raise FileExistsError("file '{}' already exists".format(name))
+    if name != pth.name:
+        fmt_pth = pth.parent / name
+        if fmt_pth.exists():
+            raise FileExistsError("file '{}' already exists".format(fmt_pth))
         else:
-            rename(filename, name)
+            rename(pth, fmt_pth)
 
 
-def fmt_names(fnames):
+def fmt_names(pth):  # TODO what about associated hash file????
     """Convert files in current directory or whose names have been
     passed on the command line.
 
     Args:
-      fnames (list of str): set of paths/filenames to explore.
+      pth (Path): Path to format.
 
     Returns:
       (None)
     """
-    invalids = []
-    for fname in std.walk(fnames):
-        print(fname)
-        fmt(fname)
+    if pth.is_dir():
+        for sub_pth in std.walk_files(pth):
+            fmt(sub_pth)
+    else:
+        fmt(pth)
