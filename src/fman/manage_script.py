@@ -6,6 +6,7 @@ from .fmt_name import fmt_names
 from .fusion import compare, fusion
 from .integrity_scripts import check, store
 from .cb.fmt_name import fmt_cbz
+from .cb.cvt_to_cbz import cvt_files
 
 
 def action_check(**kwds):
@@ -48,13 +49,21 @@ def action_cb_fmt(**kwds):
     fmt_cbz(pth)
 
 
+def action_cb_cvt(**kwds):
+    """Convert file to cbz.
+    """
+    pth = Path(kwds['pth'])
+    cvt_files(pth)
+
+
 def main():
     """Run CLI evaluation"""
     action = dict(check=action_check,
                   fmt=action_fmt_names,
                   fusion=action_fusion,
                   store=action_store,
-                  cbfmt=action_cb_fmt)
+                  cbfmt=action_cb_fmt,
+                  cbz=action_cb_cvt)
 
     parser = ArgumentParser(description="File handling manager")
     parser.add_argument("-v", "--verbosity", action="count", default=0,
@@ -77,6 +86,9 @@ def main():
 
     parser_store = subparsers.add_parser('cbfmt', help=action_cb_fmt.__doc__)
     parser_store.add_argument('pth', help="Path to format. If pth is a dir, all file will be recursively formatted")
+
+    parser_store = subparsers.add_parser('cbz', help=action_cb_cvt.__doc__)
+    parser_store.add_argument('pth', help="Path to convert. If pth is a dir, all file will be recursively formatted")
 
     kwds = vars(parser.parse_args())
     logging_tools.main(kwds.pop('verbosity'))
