@@ -1,10 +1,11 @@
+=======
 Credits
 =======
 
 Development Lead
 ----------------
 
-.. {# pkglts, doc
+.. {# pkglts, doc.authors
 
 * revesansparole, <revesansparole@gmail.com>
 
@@ -13,4 +14,8 @@ Development Lead
 Contributors
 ------------
 
-None yet. Why not be the first?
+.. {# pkglts, doc.contributors
+
+* jchopard <jerome.chopard@itk.fr>
+
+.. #}

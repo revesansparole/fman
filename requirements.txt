@@ -3,5 +3,18 @@
 # edit .pkglts/pkg_cfg instead
 # section pysetup
 
+# doc
+
+
+# dvlpt
+
+
+# install
+
+
+# test
+pytest
+pytest-mock
+
 
 # #}
