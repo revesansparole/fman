@@ -33,14 +33,10 @@ setup_kwds = dict(
         "pytest-runner",
         ],
     install_requires=[
-        "unidecode",
         ],
     tests_require=[
-        "coverage",
         "pytest",
-        "pytest-cov",
         "pytest-mock",
-        "sphinx",
         ],
     entry_points={},
     keywords='',

@@ -17,7 +17,6 @@
     "pkgname": "fman",
     "url": null
   },
-  "coverage": {},
   "doc": {
     "description": "file manager",
     "fmt": "rst",
@@ -39,16 +38,7 @@
     "intended_versions": [
       "36"
     ],
-    "require": [
-      {
-        "name": "unidecode"
-      }
-    ]
-  },
-  "sphinx": {
-    "autodoc_dvlpt": true,
-    "build_dir": "build/sphinx",
-    "theme": "default"
+    "require": []
   },
   "test": {
     "suite_name": "pytest"

@@ -6,8 +6,7 @@ import pytest
 
 # {# pkglts, test.pytest_cmdline_preparse
 def pytest_cmdline_preparse(args):
-    if 'PYCHARM_HOSTED' not in os.environ:
-        args.append("--cov=fman")
+    pass
 # #}
 
 
