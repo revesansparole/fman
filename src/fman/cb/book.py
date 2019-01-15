@@ -112,7 +112,7 @@ class Book(object):
             self.language = gr[-2]
             name = ".".join(gr[:-2])
         else:
-            self.language = 'fr'
+            self.language = 'en'
             name = ".".join(gr[:-1])
 
         # title and serie
