@@ -4,22 +4,9 @@
 from pathlib import Path
 
 from .book import Book, Serie
+from .standard import book_size
 
 txt_dir = Path("zztxt")
-
-
-def book_size(book):
-    """Size of file associated to book.
-
-    Args:
-        book (Book): book object
-
-    Returns:
-        (float): size in [Mo]
-    """
-    size = book.filename.stat().st_size
-
-    return size / 1024 ** 2
 
 
 def book_to_txt(book, level):

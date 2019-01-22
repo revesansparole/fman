@@ -3,6 +3,20 @@
 from pathlib import Path
 
 
+def book_size(book):
+    """Size of file associated to book.
+
+    Args:
+        book (Book): book object
+
+    Returns:
+        (float): size in [Mo]
+    """
+    size = book.filename.stat().st_size
+
+    return size / 1024 ** 2
+
+
 def dirname(cbzname):
     dname = cbzname[0]
     if dname in "0123456789":
