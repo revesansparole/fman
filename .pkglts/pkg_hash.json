@@ -43,13 +43,13 @@
   },
   "setup.py": {
     "pysetup.call": "t30iIuCMd/sWxStR2XNYb8bCBgwanhKt8YYn2VKACyAqL5cKFRUWpVRIpAR+uxXUZ9PYYy2csMmECcONnRZE8w==",
-    "pysetup.kwds": "k9KDsGumkHAThw0GPS/aDenYpseejsPju9mdU88PUrTDZjw9NUZBlsBusEOfY/oBRhw+Ma6l97GMAECQwAEO1A=="
+    "pysetup.kwds": "GsY0yH6VJXAFE+Iu6rhs4pcmnrtLHl1TTs9RhVM6uICpCQnzJ0H42kLoq6dXqK4WQBKB49vBX9iXweYlGkWSuw=="
   },
   "src/fman/__init__.py": {
     "base": "+GVGxVjJGifAp8dAR9V2W3aVPe7/D53bN7r0O5VxO9OUqG4vnGTZvnORu1objjjIwm86DgemQd7ax/IJpRa8Wg=="
   },
   "src/fman/version.py": {
-    "version": "XWEqqZL60QELaVflJcV2g9swZiGpSJ/V+NyoUlW7/1k6q9EnI5U1PeuLRhjGAciBI1Z89apvk/OPqgp9BfLyyw=="
+    "version": "ZWhDTK4cDKjopKSvFLgj0CROTb+/K18SodeAKRl1MkMwv+LFm4I0vVW4O5sBl459DW2NqW1Ux+SoKZjVjcMRcw=="
   },
   "test/__init__.py": {},
   "test/conftest.py": {

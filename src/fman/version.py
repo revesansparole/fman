@@ -4,7 +4,7 @@
 MAJOR = 0
 """(int) Version major component."""
 
-MINOR = 1
+MINOR = 2
 """(int) Version minor component."""
 
 POST = 0
