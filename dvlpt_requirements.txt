@@ -1,8 +1,0 @@
-# {# pkglts, pysetup
-coverage
-pytest
-pytest-cov
-pytest-mock
-sphinx
-
-# #}

@@ -12,7 +12,7 @@ from .cb.sort_file import sort_comix
 
 
 def action_cbcovert(*args, **kwds):
-    """Format name of comix book.
+    """Generate one covert per comic book.
     """
     del kwds  # unused
     if len(args) == 0:

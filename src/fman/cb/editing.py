@@ -119,4 +119,5 @@ def extract_covert(cbzpth):
 
     img_data = zf.read(imgfiles[0])
     img = Image.open(BytesIO(img_data))
+    img = img.convert("RGB")
     img.save("{}.jpg".format(cbz_name))
