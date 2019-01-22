@@ -2,7 +2,7 @@
 """
 
 import re
-from os.path import basename
+
 from unidecode import unidecode
 
 nb_fmt1 = "^([0-9]+)$"
@@ -63,14 +63,19 @@ class Book(object):
     """A single issue of a BD
     """
 
-    def __init__(self, filename):
-        self.filename = filename
+    def __init__(self, pth):
+        """Construct a Book object
+
+        Args:
+            pth (Path): path to book file, only name will be kept
+        """
+        self.filename = pth
         self.serie = ""  # serie's name
         self.number = ""  # issue number (dd, ddd, dddd.dd, dd-dd, hs, hsdd)
         self.title = ""  # name of this issue
         self.language = None  # digram for country e.g. 'fr' or 'en'
         self.type = None  # file type
-        name = basename(filename).lower().replace("_", " ")
+        name = pth.name.lower().replace("_", " ")
         name = unidecode(name)
         self.analyse(name)
 

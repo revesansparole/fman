@@ -1,26 +1,24 @@
 """Script to create a txt description of the collection.
 """
 
-from glob import glob
-from os import mkdir, stat
-from os.path import exists, join
+from pathlib import Path
 
-from .book import Serie, Book
-from . import standard as std
+from .book import Book, Serie
+from .standard import book_size
 
-txt_dir = "zztxt"
-
-
-def book_size(book):
-    filename = str(book)
-    dirname = std.dirname(filename)
-
-    size = stat(join(dirname, filename)).st_size
-
-    return size / 1024 ** 2
+txt_dir = Path("zztxt")
 
 
 def book_to_txt(book, level):
+    """Convert a single book to text paragraph
+
+    Args:
+        book (Book): book object
+        level (int): sublevel
+
+    Returns:
+        (str)
+    """
     print("\t", book)
 
     # create book name
@@ -31,23 +29,28 @@ def book_to_txt(book, level):
 
     if len(book.title) > 0:
         if len(name) > 0:
-            name = "{} - {}".format(name, book.title)
+            name = f"{name} - {book.title}"
         else:
             name = book.title
 
     # find book size in Mo
     bs = book_size(book)
 
-    # create element
-    pre = "\t" * level
-    txt = []
-    txt.append(pre + "{} ({})({:.1f} Mo)".format(name, book.language, bs))
-
-    return "\n".join(txt)
+    return "\t" * level + f"{name} ({book.language})({bs:.1f} Mo)"
 
 
 def serie_to_txt(name, serie, level):
-    txt = ["\t" * level + "{}:".format(name)]
+    """Convert a serie into text paragraph
+
+    Args:
+        name (str): name of book
+        serie (Serie): set of book
+        level (int): sublevel
+
+    Returns:
+        (str)
+    """
+    txt = ["\t" * level + f"{name}:"]
 
     for name in sorted(serie.subseries.keys()):
         txt.append(serie_to_txt(name, serie.subseries[name], level + 1))
@@ -65,8 +68,8 @@ def main():
     print("create directories")
     #
     ##################################################
-    if not exists(txt_dir):
-        mkdir(txt_dir)
+    if not txt_dir.exists():
+        txt_dir.mkdir()
 
     ##################################################
     #
@@ -74,13 +77,13 @@ def main():
     #
     ##################################################
     for dirname in "0abcdefghijklmnopqrstuvwxyz":
-        filenames = sorted(glob(join(dirname, "*.cbz")))
+        dir_pth = Path(dirname)
 
         # sort by serie
         top = Serie()
 
-        for filepath in filenames:
-            book = Book(filepath)
+        for pth in dir_pth.glob("*.cbz"):
+            book = Book(pth)
             if len(book.serie) == 0:
                 # single issue
                 top.subseries[book.title] = book
@@ -98,11 +101,9 @@ def main():
                 ser.books.append(book)
 
         # write book list
-        keys = sorted(top.subseries.keys())
-
         body = ["<DIRECTORY>"]
 
-        for name in keys:
+        for name in sorted(top.subseries.keys()):
             print(name)
             serie = top.subseries[name]
             if isinstance(serie, Book):
@@ -114,6 +115,6 @@ def main():
         body.append("</DIRECTORY>")
 
         # create txt file
-        txt_path = join(txt_dir, "dir_{}.txt".format(dirname))
-        with open(txt_path, 'w') as f:
+        txt_pth = txt_dir / f"dir_{dirname}.txt"
+        with open(str(txt_pth), 'w') as f:
             f.write("\n".join(body))

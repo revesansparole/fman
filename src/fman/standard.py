@@ -1,93 +1,75 @@
 """Defines standard paths and components for the library.
 """
 
-import os
-from os import path
-
 hashext = ".hash"
 
 
-def hashname(filename):
+def hashname(pth):
     """Construct standard name for associated hash file.
 
     Args:
-        filename (str):
+        pth (Path):
 
     Returns:
-        (str)
+        (pth)
     """
-    return filename + hashext
+    return pth.parent / (pth.name + hashext)
 
 
-def is_hashname(filename):
+def is_hashname(pth):
     """Check whether the name corresponds to standard hash file.
 
     Args:
-        filename (str):
+        pth (Path):
 
     Returns:
         (bool)
     """
-    return path.splitext(filename)[1] == hashext
+    return pth.suffix == hashext
 
 
-def is_hidden(fpth):
+def is_hidden(pth):
     """Checks whether the path refers to a hidden file.
 
     Args:
-        fpth (str): path to file or directory
+        pth (Path): path to file or directory
 
     Returns:
         (bool)
     """
-    return path.basename(fpth).startswith(".")
+    return pth.name.startswith(".")
 
 
-def walk(names, hidden_files=False):
-    """Walk through all components of names.
-
-    if name is a directory, explore it recursively
+def walk(root, hidden_files=False):
+    """Walk recursively through all paths in root.
 
     Args:
-        names (list of str): list of root paths to explore
+        root (Path): root path to explore
         hidden_files (bool): Whether to explore/return hidden files
 
     Returns:
         (iter of str)
     """
-    for name in names:
-        if path.isdir(name):
-            # recursively explore this directory
-            for root, dnames, fnames in os.walk(name):
-                # yield directories components
-                dnames.sort()
-                for i in range(len(dnames) - 1, -1, -1):
-                    if hidden_files or not is_hidden(dnames[i]):
-                        yield path.join(root, dnames[i])
-                    else:
-                        # remove hidden directories from future walk
-                        del dnames[i]
+    for child in root.iterdir():
+        if hidden_files or not is_hidden(child):
+            if not is_hashname(child):
+                yield child
 
-                # yield files components
-                fnames.sort()
-                for fname in fnames:
-                    if (not is_hashname(fname)) and (hidden_files or not is_hidden(fname)):
-                        yield path.join(root, fname)
-        else:
-            yield name
+            if child.is_dir():
+                for sub_child in walk(child, hidden_files):
+                    yield sub_child
 
 
-def walk_files(names, hidden_files=False):
-    """Walk through all directories recursively
-    and return files in them.
+def walk_files(root, hidden_files=False):
+    """Walk recursively through all files only in root.
 
     Args:
-        names (list of str): list of root paths to explore
+        root (Path): root path to explore
         hidden_files (bool): Whether to explore/return hidden files
 
     Returns:
         (iter of str)
     """
-    for name in walk(names, hidden_files):
-        if not path.isdir(name):
-            yield name
+    for pth in walk(root, hidden_files):
+        if pth.is_file():
+            yield pth

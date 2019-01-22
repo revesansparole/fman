@@ -4,53 +4,61 @@ Based on sha512 algorithm to compute the hash code of files
 and check it against previously stored hash code.
 """
 
-from os.path import exists
-
 from . import integrity as igt
 from . import standard as std
 
 
-def store(fnames):
-    """Associate a hash file to a given file in order
-    to store it and check later the lack of corruption
-    of the data.
+def _store(pth):
+    hash_pth = std.hashname(pth)
+    if not hash_pth.exists():
+        print(f"storing: {pth}")
+        igt.associate_hash(pth)
 
-    if the file already has a hashfile associated, does nothing
+
+def store(pth):
+    """Associate a hash to a file.
+
+    Store the hash of file content in a companion file in order
+    to store it and check later the lack of corruption of the data.
+
+    if the file already has a hashfile associated, does nothing.
+
+    Notes: if pth is a directory, all files in it will be recursively checked
 
     Args:
-        fnames (list of str):
+        pth (Path): path to store.
 
     Returns:
         None
     """
-    for fname in std.walk_files(fnames):
-        hname = std.hashname(fname)
-        if not exists(hname):
-            print("{}".format(fname))
-            igt.associate_hash(fname)
+    if pth.is_dir():
+        for sub_pth in std.walk_files(pth):
+            _store(sub_pth)
+    else:
+        _store(pth)
 
 
-def check(fnames):
+def _check(pth):
+    try:
+        valid = "valid:  " if igt.check(pth) else "corrupt:"
+        print(f"{valid} {pth}")
+    except igt.IOHashError:
+        print(f"no valid hash found: {pth}")
+
+
+def check(pth):
     """Check integrity of files.
 
+    Notes: if pth is a directory, all files in it will be recursively checked
+
     Args:
-        fnames (list of str):
+        pth (Path): path to check.
 
     Returns:
         None: result printed on console
     """
-    invalids = []
-    for fname in std.walk_files(fnames):
-        try:
-            valid = igt.check(fname)
-            print(valid, fname)
-            if not valid:
-                print("pb with: {}".format(fname))
-                invalids.append(fname)
-        except igt.IOHashError:
-            print(fname, "no valid hash found")
-
-    if len(invalids) > 0:
-        print("\n\n\n\nInvalids")
-        for name in invalids:
-            print(name)
+    if pth.is_dir():
+        for sub_pth in std.walk_files(pth):
+            _check(sub_pth)
+    else:
+        _check(pth)

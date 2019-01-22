@@ -17,5 +17,6 @@ Contributors
 .. {# pkglts, doc.contributors
 
 * jchopard <jerome.chopard@itk.fr>
+* Jerome Chopard <revesansparole@gmail.com>
 
 .. #}

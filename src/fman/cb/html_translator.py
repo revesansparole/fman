@@ -1,6 +1,7 @@
 """Script to create a html description of the collection.
 """
 
+from pathlib import Path
 from glob import glob
 from os import mkdir, stat
 from os.path import splitext, exists, join
@@ -15,30 +16,28 @@ from .book import Serie, Book
 from . import standard as std
 
 thumb_width = 80
-thumb_dir = "zzthumbnails"
-html_dir = "zzhtml"
-tmp_fld = ".tmp_fld"
+thumb_dir = Path("zzthumbnails")
+html_dir = Path("zzhtml")
+tmp_fld = Path(".tmp_fld")
 
 
 def create_thumbnail(book):
     filename = str(book)
-    name, ext = splitext(filename)
-    assert ext == ".cbz"
+    assert book.filename.suffix == ".cbz"
 
     dirname = std.dirname(filename)
-    loc_thumbfile = join(thumb_dir, "{}/{}.jpg".format(dirname, filename))
-    if not exists(loc_thumbfile):
+    loc_thumbfile = thumb_dir / f"{dirname}/{filename}.jpg"
+    if not loc_thumbfile.exists():
         zf = ZipFile(book.filename, 'r')
-        imgfiles = [name for name in zf.namelist() \
-                    if splitext(name)[1].lower()[1:] in std.img_exts]
+        imgfiles = [name for name in zf.namelist() if name.split(".")[-1].lower() in std.img_exts]
         imgfiles.sort()
         # imp = Parser()
         # imp.feed(zf.read(imgfiles[0]) )
         # img = imp.close()
         # zf.close()
         # hack because bug in ImageParser
-        tmp_name = join(tmp_fld, "thumbnail" + splitext(imgfiles[0])[1].lower())
-        tmpf = open(tmp_name, 'wb')
+        tmp_name = tmp_fld / f"thumbnail.{imgfiles[0].split('.')[-1].lower()}"
+        tmpf = open(str(tmp_name), 'wb')
         tmpf.write(zf.read(imgfiles[0]))
         tmpf.close()
         zf.close()
@@ -55,15 +54,6 @@ def create_thumbnail(book):
     return loc_thumbfile
 
 
-def book_size(book):
-    filename = str(book)
-    dirname = std.dirname(filename)
-
-    size = stat(join(dirname, filename)).st_size
-
-    return size / 1024 ** 2
-
-
 def book_to_html(book, level):
     print("\t", book)
 
@@ -76,29 +66,32 @@ def book_to_html(book, level):
 
     if len(book.title) > 0:
         if len(name) > 0:
-            name = "{} - {}".format(name, book.title)
+            name = f"{name} - {book.title}"
         else:
             name = book.title
 
     # find book size in Mo
-    bs = book_size(book)
+    bs = std.book_size(book)
 
     # create li element
-    txt = ["<li>"]
-    txt.append("<h{:d}>{} ({:.1f} Mo)</h{:d}>".format(level, name, bs, level))
     kwds = "+".join(tuple(book.keywords()))
-    txt.append("<a href='https://www.google.com/search?q=bd+{}'>".format(kwds))
-    txt.append("<img src='../{}' tag='{}' />".format(quote(thumbname), quote(name)))
-    txt.append("</a>")
-    txt.append("</li>")
+    txt = [
+        "<li>",
+        f"<h{level:d}>{name} ({bs:.1f} Mo)</h{level:d}>",
+        f"<a href='https://www.google.com/search?q=bd+{kwds}'>",
+        f"<img src='../{quote(str(thumbname))}' tag='{quote(name)}' />",
+        "</a>",
+        "</li>"
+    ]
 
     return "\n".join(txt)
 
 
 def serie_to_html(name, serie, level):
-    txt = []
-    txt.append("<li><h{:d}>{}</h{:d}>".format(level, name, level))
-    txt.append("<ul>")
+    txt = [
+        f"<li><h{level:d}>{name}</h{level:d}>",
+        "<ul>"
+    ]
 
     for name in sorted(serie.subseries.keys()):
         txt.append(serie_to_html(name, serie.subseries[name], level + 1))
@@ -119,36 +112,29 @@ def main():
     print("create directories")
     #
     ##################################################
-    if not exists(thumb_dir):
-        mkdir(thumb_dir)
-
-    for dirname in "0abcdefghijklmnopqrstuvwxyz":
-        if not exists(join(thumb_dir, dirname)):
-            mkdir(join(thumb_dir, dirname))
-
-    if not exists(html_dir):
-        mkdir(html_dir)
-
-    if not exists(tmp_fld):
-        mkdir(tmp_fld)
+    folders = [thumb_dir, html_dir, tmp_fld] + [thumb_dir / n for n in "0abcdefghijklmnopqrstuvwxyz"]
+    for fld in folders:
+        if not fld.exists():
+            fld.mkdir()
 
     ##################################################
     #
     print("create local html per directory")
     #
     ##################################################
-    tpl = Template(resource_string("fman", "bd/template_main.html").decode("utf-8"))
+
+    tpl = Template((Path(__file__).parent / "template_main.html").read_text(encoding="utf-8"))
 
     loc_htmls = []
 
     for dirname in "0abcdefghijklmnopqrstuvwxyz":
-        filenames = sorted(glob(join(dirname, "*.cbz")))
+        dir_pth = Path(dirname)
 
         # sort by serie
         top = Serie()
 
-        for filepath in filenames:
-            book = Book(filepath)
+        for pth in dir_pth.glob("*.cbz"):
+            book = Book(pth)
             if len(book.serie) == 0:
                 # single issue
                 top.subseries[book.title] = book
@@ -166,15 +152,13 @@ def main():
                 ser.books.append(book)
 
         # create html file
-        html_path = join(html_dir, "dir_{}.html".format(dirname))
-        loc_htmls.append((dirname, html_path))
+        html_pth = html_dir / f"dir_{dirname}.html"
+        loc_htmls.append((dirname, html_pth))
 
         # write book list
-        keys = sorted(top.subseries.keys())
-
         body = ["<ul>"]
 
-        for name in keys:
+        for name in sorted(top.subseries.keys()):
             print(name)
             serie = top.subseries[name]
             if isinstance(serie, Book):
@@ -185,7 +169,7 @@ def main():
 
         body.append("</ul>")
 
-        with open(html_path, 'w') as f:
+        with open(str(html_pth), 'w') as f:
             txt = tpl.substitute(body="\n".join(body))
             f.write(txt)
 
@@ -195,8 +179,8 @@ def main():
     #
     ##################################################
     body = ["<ul>"]
-    for dir_name, file_name in loc_htmls:
-        frag = "<li><a href='{}'>{}</a></li>".format(file_name, dir_name)
+    for dir_name, pth in loc_htmls:
+        frag = f"<li><a href='{pth}'>{dir_name}</a></li>"
         body.append(frag)
 
     body.append("</ul>")

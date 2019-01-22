@@ -10,6 +10,7 @@
 
 
 # install
+unidecode
 
 
 # test
