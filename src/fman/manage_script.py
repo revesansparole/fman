@@ -6,6 +6,7 @@ from .cb.cvt_to_cbz import cvt_files
 from .cb.editing import extract_cover
 from .cb.fmt_name import fmt_cbz
 from .cb.sort_file import sort_comics
+from .cb.txt_translator import main as txt_translator
 from .fmt_name import fmt_names
 from .fusion import compare, fusion
 from .integrity_scripts import check, store
@@ -76,6 +77,12 @@ def action_cb_cover(**kwds):
         extract_cover(pth)
 
 
+def action_txt_translate(**kwds):
+    """List book collection into txt file
+    """
+    txt_translator()
+
+
 def main():
     """Run CLI evaluation"""
     action = dict(check=action_check,
@@ -85,7 +92,8 @@ def main():
                   cbfmt=action_cb_fmt,
                   cbz=action_cb_cvt,
                   cbsort=action_cb_sort,
-                  cbcover=action_cb_cover)
+                  cbcover=action_cb_cover,
+                  cbtxt=action_txt_translate)
 
     parser = ArgumentParser(description="File handling manager")
     parser.add_argument("-v", "--verbosity", action="count", default=0,
@@ -117,6 +125,8 @@ def main():
 
     parser_cbcover = subparsers.add_parser('cbcover', help=action_cb_cover.__doc__)
     parser_cbcover.add_argument('pth', help="Path to comics. If pth is a dir, all file will be recursively formatted")
+
+    parser_txttrans = subparsers.add_parser('cbtxt', help=action_txt_translate.__doc__)
 
     kwds = vars(parser.parse_args())
     logging_tools.main(kwds.pop('verbosity'))
