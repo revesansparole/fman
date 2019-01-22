@@ -13,14 +13,14 @@ from PIL import Image
 
 from . import standard as std
 
-__all__ = ["create_cbz", "extract_covert", "make_cbz"]
+__all__ = ["create_cbz", "extract_cover", "make_cbz"]
 
 
 def create_cbz(outpth, pages):
     """Create a cbz file from a list of image files.
 
     Args:
-        pth (Path): path to cbz file that will be created
+        outpth (Path): path to cbz file that will be created
         pages (list of Path): ordered list of path of image files
 
     Returns:
