@@ -29,10 +29,10 @@
     "pysetup": "lCbGKPjPfZaLiwclMKKn7EdCraYOyhNIZcfBdXCFnX8YV/uOTypLRFYBm7uxfWtnSe62wAlYDv/2EzakafsQtw=="
   },
   "requirements.txt": {
-    "pysetup": "iTZjqP70gqex+rrZDs7t3VRB1rbw7XzvC1skzRwmCpxkQE8S6ge4wSQa/65a5KT9nmYhJoSTtiMzHRYw1o7Rug=="
+    "pysetup": "ZBCOOQo1ux1HDdt83eErlNlOXdcbfPMNDSdHUbhSX44fK7SJ1e3ZTyshyOKzAzeifNtJe6l/h+Ea6GUvthURvg=="
   },
   "requirements_minimal.txt": {
-    "pysetup": "vmiIOMqGhuXJBom/KrWFzvETfJmbSMcLkvZ6XDTcFWl7XRHJgu1tcb4eHn97TgcziEqpfD96M5qO0DV3z3S+CQ=="
+    "pysetup": "KiP/WpAbLPYHWkXuiyV2vRUsl+IMMPnQPNDcpJP9vLjjjaRtXQ6oSbELRYzAe85m3cvTi3MmI5V5yRbTPXuf4Q=="
   },
   "setup.cfg": {
     "pysetup.flake8": "r2h1GtEZqmKegYJLgGqsjgRTHp/KQUy3BgQGcLMBmIuIJt+59ZTWG6fCSwAgYu2Kkez18r3TTELYDPr9IE1RTg==",
@@ -43,7 +43,7 @@
   },
   "setup.py": {
     "pysetup.call": "t30iIuCMd/sWxStR2XNYb8bCBgwanhKt8YYn2VKACyAqL5cKFRUWpVRIpAR+uxXUZ9PYYy2csMmECcONnRZE8w==",
-    "pysetup.kwds": "GsY0yH6VJXAFE+Iu6rhs4pcmnrtLHl1TTs9RhVM6uICpCQnzJ0H42kLoq6dXqK4WQBKB49vBX9iXweYlGkWSuw=="
+    "pysetup.kwds": "jjQzHQJSlzQr3eoeshmKo1iEaWWxXPfeh/bJchgXlgXLnIH/k39AB+IkUpnPyQH47XvJbzZTcAcFdpj8NHFC/A=="
   },
   "src/fman/__init__.py": {
     "base": "+GVGxVjJGifAp8dAR9V2W3aVPe7/D53bN7r0O5VxO9OUqG4vnGTZvnORu1objjjIwm86DgemQd7ax/IJpRa8Wg=="

@@ -38,7 +38,11 @@
     "intended_versions": [
       "36"
     ],
-    "require": []
+    "require": [
+      {
+        "name": "unidecode"
+      }
+    ]
   },
   "test": {
     "suite_name": "pytest"
