@@ -15,7 +15,7 @@ def fmt(pth):
     if not tmp_fld.exists():
         tmp_fld.mkdir()
 
-    name = str(Book(pth.name))
+    name = str(Book(pth))
     print("fmt", pth, name)
     if name != pth.name:
         # do rename in two steps to avoid troubles with
