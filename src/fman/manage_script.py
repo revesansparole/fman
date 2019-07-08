@@ -6,6 +6,7 @@ from .cb.cvt_to_cbz import cvt_files
 from .cb.editing import extract_cover
 from .cb.fmt_name import fmt_cbz
 from .cb.html_translator import main as html_translator
+from .cb.rename_files import rename_comics
 from .cb.sort_file import sort_comics
 from .cb.txt_translator import main as txt_translator
 from .fmt_name import fmt_names
@@ -67,6 +68,14 @@ def action_cb_sort(**kwds):
     sort_comics(pth)
 
 
+def action_cb_rename(**kwds):
+    """Rename cbz files that follow the given pattern into numbered issues.
+    """
+    pth = Path(kwds['pth'])
+    pattern = kwds['pattern'].strip()
+    rename_comics(pth, pattern)
+
+
 def action_cb_cover(**kwds):
     """Extract cover of cbz files in current working directory.
     """
@@ -100,6 +109,7 @@ def main():
                   cbz=action_cb_cvt,
                   cbsort=action_cb_sort,
                   cbcover=action_cb_cover,
+                  cbrn=action_cb_rename,
                   cbtxt=action_txt_translate,
                   cbhtml=action_html_translate)
 
@@ -130,6 +140,10 @@ def main():
 
     parser_cbsort = subparsers.add_parser('cbsort', help=action_cb_sort.__doc__)
     parser_cbsort.add_argument('pth', help="Path to sort. If pth is a dir, all file will be recursively formatted")
+
+    parser_cbrn = subparsers.add_parser('cbrn', help=action_cb_rename.__doc__)
+    parser_cbrn.add_argument('pth', help="Path to files")
+    parser_cbrn.add_argument('pattern', help="Pattern of file name that will be kept after rename")
 
     parser_cbcover = subparsers.add_parser('cbcover', help=action_cb_cover.__doc__)
     parser_cbcover.add_argument('pth', help="Path to comics. If pth is a dir, all file will be recursively formatted")

@@ -1,6 +1,10 @@
 """Defines standard paths and components for the library.
 """
 
+from os import rename
+from pathlib import Path
+
+tmp_fld = Path(".tmp_fld")
 hashext = ".hash"
 
 
@@ -38,6 +42,27 @@ def is_hidden(pth):
         (bool)
     """
     return pth.name.startswith(".")
+
+
+def safe_rename(pth, name):
+    """Normalize name.
+    """
+    if not tmp_fld.exists():
+        tmp_fld.mkdir()
+
+    print("rename", pth, name)
+    if name != pth.name:
+        # do rename in two steps to avoid troubles with
+        # windows not distinguishing upper from lower
+        # letters in file names
+        rename(pth, str(tmp_fld / name))
+        fmt_pth = pth.parent / name
+        if fmt_pth.exists():
+            # revert move
+            rename(str(tmp_fld / name), pth)
+            raise FileExistsError("CBZ file '{}' already exists".format(pth))
+        else:
+            rename(str(tmp_fld / name), fmt_pth)
 
 
 def walk(root, hidden_files=False):
